@@ -5,12 +5,13 @@ import java.io.InputStreamReader;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Scanner;
-import java.util.concurrent.CountDownLatch;
+// import java.util.concurrent.CountDownLatch;
 
 import model.Contact;
 
 public class App {
     private static Scanner scan = new Scanner(System.in);
+    private static BufferedReader reader;
 
     public static void main(String[] args) throws Exception {
         afficherMenu();
@@ -173,7 +174,7 @@ public class App {
 
     private static void searchContact1() throws IOException {
         // Saisissez le prénom du contact que vous souhaitez afficher
-        System.out.println("Entrez le prénom du contact que vous voulez afficher :");
+        System.out.println("\nEntrez le prénom du contact que vous voulez afficher :");
         String numeroASupprimer = scan.nextLine();
     
         // Charger la liste des contacts du fichier dans un ArrayList
@@ -194,22 +195,21 @@ public class App {
             try {
                 FileInputStream inputStream = new FileInputStream("contacts.csv");
                 BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
-    
+            
                 // Sautez les premières lignes jusqu'à la ligne spécifiée par l'index
                 for (int i = 0; i < index; i++) {
                     reader.readLine();
                 }
-    
+            
                 // Affichez la ligne d'index
                 String line = reader.readLine();
-                System.out.println(line);
+                System.out.println("\nVoilà votre contact : " + "\n" + line + "\n");
             } catch (Exception e) {
                 // Gérez les exceptions ici
                 System.out.println("Error: " + e.getMessage());
-            }
+            }         
         } else {
             System.out.println("Contact not found");
         }
     }
-    
 }
