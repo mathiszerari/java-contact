@@ -5,6 +5,11 @@ import java.io.InputStreamReader;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Scanner;
+import java.io.File;
+import java.io.PrintWriter;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Scanner;
 // import java.util.concurrent.CountDownLatch;
 
 import model.Contact;
@@ -28,10 +33,13 @@ public class App {
                     deleteContact();
                     break;
                 case "4":
-                    editContact();
+                    modifContact();
                     break;
                 case "5":
-                    searchContact1();
+                    searchContact();
+                    break;
+                case "6":
+                    sortAContact();
                     break;
                 case "q":
                     scan.close();
@@ -107,12 +115,14 @@ public class App {
 
     public static void afficherMenu() {
         ArrayList<String> menus = new ArrayList<>();
-        menus.add("-- MENU --");
+        menus.add("\n-- MENU --");
         menus.add("1- Ajouter un contact");
         menus.add("2- Lister les contacts");
         menus.add("3- Supprimer un contact");
         menus.add("4- Modifier un contact");
         menus.add("5- Afficher un contact");
+        menus.add("6- Trier les contacts par nom");
+        menus.add("7- Trier les contacts par date de naissance");
         menus.add("q- Quitter");
         for (String s : menus) {
             System.out.println(s);
@@ -145,34 +155,77 @@ public class App {
         }
     }
 
-    private static void editContact() throws IOException {
+    private static void modifContact() {
+        System.out.println("Entrez le prénom du contact que vous voulez modifier");
+        String numeroASupprimer = scan.nextLine();
+        try {
+            ArrayList<Contact> liste = Contact.lister();
+    
+            // Utilisez la méthode indexOf() pour rechercher le contact à supprimer
+            int index = -1;
+            for (int i = 0; i < liste.size(); i++) {
+                Contact contact = liste.get(i);
+                if (contact.getPrenom().equals(numeroASupprimer)) {
+                    index = i;
+                    break;
+                }
+            }
+            // Si l'index a été trouvé, supprimer le contact de la liste et écrire la liste
+            // modifiée dans le fichier contacts.csv
+            if (index != -1) {
+                Contact contact = liste.get(index); // utilisez la variable 'i' déclarée précédemment
+                System.out.println(contact);
 
-        // Récupérez l'entrée de l'utilisateur pour savoir quel contact supprimer
-        System.out.println("Entrez le prénom du contact que vous voulez modifier :");
-        String prenomEdit = scan.nextLine();
-
-        ArrayList<Contact> liste = Contact.lister();
-
-        int index = -1;
-        for (int i = 0; i < liste.size(); i++) {
-            Contact contact = liste.get(i);
-            if (contact.getPrenom().equals(prenomEdit)) {
-                index = i;
-                System.out.println("Contact en cours de modification");
-                break;
+                while(true) {
+                    System.out.println("\nQue voulez-vous modifier parmi le nom, le prenom, le mail, le numéro et la date de naissance ? \nSi vous souhaitez quitter ce menu tapez 'quitter'");
+                    String champAModifier = scan.nextLine(); // stockez la valeur entrée par l'utilisateur
+                    switch (champAModifier) {
+                    case "nom":
+                        System.out.println("\nEntrez le nouveau nom");
+                        String nouveauNom = scan.nextLine(); // stockez le nouveau nom entré par l'utilisateur  
+                        contact.setNom(nouveauNom); // utilisez la méthode setNom() pour mettre à jour le nom du contact
+                        break;
+                    case "prenom":
+                        System.out.println("\nEntrez le nouveau prenom");
+                        String nouveauprenom = scan.nextLine(); // stockez le nouveau nom entré par l'utilisateur  
+                        contact.setPrenom(nouveauprenom); // utilisez la méthode setNom() pour mettre à jour le nom du contact
+                        break;
+                    case "mail":
+                        System.out.println("\nEntrez le nouveau mail");
+                        String nouveaumail = scan.nextLine(); // stockez le nouveau nom entré par l'utilisateur  
+                        contact.setMail(nouveaumail); // utilisez la méthode setNom() pour mettre à jour le nom du contact
+                        break;
+                    case "numero":
+                        System.out.println("\nEntrez le nouveau numero");
+                        String nouveaunumero = scan.nextLine(); // stockez le nouveau nom entré par l'utilisateur  
+                        contact.setNumero(nouveaunumero); // utilisez la méthode setNom() pour mettre à jour le nom du contact
+                        break;
+                    case "date":
+                        System.out.println("\nEntrez la nouvelle date");
+                        String nouveaudate = scan.nextLine(); // stockez le nouveau nom entré par l'utilisateur  
+                        contact.setDateNaissance(nouveaudate); // utilisez la méthode setNom() pour mettre à jour le nom du contact
+                        break;
+                    case "quitter":
+                        // afficherMenu();
+                        return;
+                    default:
+                        System.out.println("pabon");
+                        break;
+                    }
+                    Contact.ecrire(liste); // écrivez la liste modifiée dans le fichier contacts.csv
+                }
+            } else{
+                System.out.println("contact non trouvé");
             }
         }
-        // Si l'index a été trouvé, supprimer le contact de la liste et écrire la liste
-        // modifiée dans le fichier contacts.csv
-        if (index != -1) {
-            liste.remove(index);
-            Contact.ecrire(liste);
-            App.ajouterContact();
-            System.out.println("Contact modifié");
+        catch(IOException e) {
+            System.out.println("erreur avec le fichier");
+        } catch (ParseException e) {
+            e.printStackTrace();
         }
     }
 
-    private static void searchContact1() throws IOException {
+    private static void searchContact() throws IOException {
         // Saisissez le prénom du contact que vous souhaitez afficher
         System.out.println("\nEntrez le prénom du contact que vous voulez afficher :");
         String numeroASupprimer = scan.nextLine();
@@ -211,5 +264,31 @@ public class App {
         } else {
             System.out.println("Contact not found");
         }
+    }
+
+
+    private static void sortAContact() throws IOException {
+        // Lecture du fichier en entrée
+        File inputFile = new File("contacts.csv");
+        Scanner input = new Scanner(inputFile);
+
+        // Création de l'ArrayList pour stocker les lignes du fichier
+        ArrayList<String> lines = new ArrayList<>();
+        while (input.hasNextLine()) {
+        lines.add(input.nextLine());
+        }
+        input.close();
+
+        // Tri des lignes du fichier par ordre alphabétique
+        Collections.sort(lines);
+
+        // Écriture des lignes triées dans un nouveau fichier
+        File outputFile = new File("contacts.csv");
+        PrintWriter output = new PrintWriter(outputFile);
+        for (String line : lines) {
+            output.println(line);
+        }
+        output.close();
+        System.out.println("Votre fichier à été trié");
     }
 }
