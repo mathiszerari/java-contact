@@ -14,16 +14,16 @@ public class App {
             String choix = scan.nextLine();
             switch (choix) {
                 case "1":
-                    ajouterContact();
+                    addContact();
                     break;
                 case "2":
-                    listerContact();
+                    showContact();
                     break;
                 case "3":
                     deleteContact();
                     break;
                 case "4":
-                    modifContact();
+                    editContact();
                     break;
                 case "5":
                     searchContact();
@@ -45,8 +45,7 @@ public class App {
         }
     }
 
-    private static void listerContact() {
-        // Contact c = new Contact();
+    private static void showContact() {
         try {
             ArrayList<Contact> liste = Contact.lister();
 
@@ -59,7 +58,7 @@ public class App {
 
     }
 
-    public static void ajouterContact() {
+    public static void addContact() {
 
         Contact c = new Contact();
         System.out.println("Saisir le nom:");
@@ -69,7 +68,7 @@ public class App {
 
         do {
             try {
-                System.out.println("Saisir le téléphone:");
+                System.out.println("Saisir le numéro de téléphone:");
                 c.setNumero(scan.nextLine());
                 break;
             } catch (ParseException e) {
@@ -79,7 +78,7 @@ public class App {
 
         do {
             try {
-                System.out.println("Saisir le mail:");
+                System.out.println("Saisir l'adresse mail:");
                 c.setMail(scan.nextLine());
                 break;
             } catch (ParseException e) {
@@ -149,7 +148,7 @@ public class App {
         }
     }
 
-    private static void modifContact() {
+    private static void editContact() {
         System.out.println("Entrez le prénom du contact que vous voulez modifier");
         String numeroASupprimer = scan.nextLine();
         try {
@@ -293,7 +292,6 @@ public class App {
             Contact.ecrire(liste);
             System.out.println("Votre fichier à été trié");
         } catch (IOException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
     }
