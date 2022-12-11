@@ -143,7 +143,7 @@ public class Contact {
         System.out.println(liste);
         try {
             for (Contact contact : liste) {
-                pw.println(contact);
+                pw.println("\n" + contact);
             }
 
         } finally {

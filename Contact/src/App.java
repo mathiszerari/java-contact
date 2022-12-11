@@ -1,16 +1,6 @@
-import java.io.BufferedReader;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.text.ParseException;
-import java.util.ArrayList;
-import java.util.Scanner;
-import java.io.File;
-import java.io.PrintWriter;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Scanner;
-// import java.util.concurrent.CountDownLatch;
+import java.io.*;
+import java.text.*;
+import java.util.*;
 
 import model.Contact;
 
@@ -39,7 +29,10 @@ public class App {
                     searchContact();
                     break;
                 case "6":
-                    sortAContact();
+                    sortAlphabContact();
+                    break;
+                case "7":
+                    sortDateContact();
                     break;
                 case "q":
                     scan.close();
@@ -151,7 +144,8 @@ public class App {
         // modifiée dans le fichier contacts.csv
         if (index != -1) {
             liste.remove(index);
-            Contact.ecrire(liste);
+            // Contact.ecrire(liste);
+            System.out.println("Votre contact à été supprimé");
         }
     }
 
@@ -266,8 +260,7 @@ public class App {
         }
     }
 
-
-    private static void sortAContact() throws IOException {
+    private static void sortAlphabContact() throws IOException {
         // Lecture du fichier en entrée
         File inputFile = new File("contacts.csv");
         Scanner input = new Scanner(inputFile);
@@ -290,5 +283,18 @@ public class App {
         }
         output.close();
         System.out.println("Votre fichier à été trié");
+    }
+
+    private static void sortDateContact() throws IOException {
+        ArrayList<Contact> liste;
+        try {
+            liste = Contact.lister();
+            Collections.sort(liste, (c1, c2) -> c1.getDateNaissance().compareTo(c2.getDateNaissance()));
+            Contact.ecrire(liste);
+            System.out.println("Votre fichier à été trié");
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
     }
 }
